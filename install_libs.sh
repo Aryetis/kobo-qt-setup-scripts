@@ -4,7 +4,7 @@ set -e
 LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # path to cross tools root; another popular path is ${HOME}/x-tools
-CROSS_TC_PATH=${SYSROOT:=${HOME}/kobo/x-tools}
+CROSS_TC_PATH=${SYSROOT:=${HOME}/x-tools}
 
 CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
