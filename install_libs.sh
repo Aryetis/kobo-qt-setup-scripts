@@ -26,9 +26,8 @@ export RANLIB=${CROSS}-ranlib
 export CPPFLAGS="-I$PREFIX/include"
 export LDFLAGS="-L$PREFIX/lib"
 #harfbuzz
-#export CXXFLAGS="-I$PREFIX/include"
-#
-export FREETYPE_CFLAGS="-I$PREFIX/include"
+export CXXFLAGS="-I$PREFIX/include"
+export FREETYPE_CFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2 -I$PREFIX/include/freetype2/freetype"
 export FREETYPE_LIBS="-L$PREFIX/lib"
 export CHAFA_CFLAGS="-I$PREFIX/include"
 export CHAFA_LIBS="-L$PREFIX/lib"
@@ -166,7 +165,8 @@ REPO=https://github.com/harfbuzz/harfbuzz
 LOCALREPO=harfbuzz
 get_clean_repo
 
-sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
+sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --with-freetype
+#sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
 #./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
 make -j$PARALLEL_JOBS && make install
 
