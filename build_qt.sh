@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -x
+set -e
 
 USAGE="usage: build_qt.sh [kobo|desktop] [config] [make] [install]"
 
@@ -16,10 +16,7 @@ CROSS=${CROSS:=/home/${USER}/x-tools/${CROSS_TC}/bin/${CROSS_TC}}
 PREFIX_KOBO=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_KOBO}}
 PREFIX_DESKTOP=${PREFIX:-/home/${USER}/qt-bin/${LOCALREPO_DESKTOP}}
 
-#FREETYPE_LIBS_KOBO=\"-lz -lharfbuzz -lfreetype -lpng\"
-#LIBVARS_KOBO=FREETYPE_LIBS=$FREETYPE_LIBS_KOBO
-#LIBVARS_KOBO=FREETYPE_LIBS="-lz -lharfbuzz -lfreetype -lpng" HARFBUZZ_LIBS="-lfreetype -lpng -lharfbuzz -lz"
-LIBVARS_KOBO=FREETYPE_LIBS="-lz -lharfbuzz -lfreetype -lpng" HARFBUZZ_LIBS="-lfreetype -lpng -lharfbuzz -lz"
+LIBVARS_KOBO=(FREETYPE_LIBS="-lz -lharfbuzz -lfreetype -lpng" HARFBUZZ_LIBS="-lfreetype -lpng -lharfbuzz -lz")
 LIBVARS_DESKTOP=
 
 PARALLEL_JOBS=$(($(getconf _NPROCESSORS_ONLN 2> /dev/null || sysctl -n hw.ncpu 2> /dev/null || echo 0) + 1))
@@ -66,14 +63,14 @@ case  ${1:-kobo} in
         config=$CONFIG_KOBO
         localrepo=$LOCALREPO_KOBO
         PREFIX=$PREFIX_KOBO
-        LIBVARS=$LIBVARS_KOBO
+        LIBVARS=("${LIBVARS_KOBO[@]}")
         ;;
     desktop)
         platform=desktop
         config=$CONFIG_DESKTOP
         localrepo=$LOCALREPO_DESKTOP
         PREFIX=$PREFIX_DESKTOP
-        LIBVARS=$LIBVARS_DESKTOP
+        LIBVARS=${LIBVARS_DESKTOP[@]}
         ;;
     *)
         echo "Missing platform argument, defaulting to kobo"
@@ -98,13 +95,8 @@ done
 cd $localrepo
 
 
-#echo $LIBVARS
-#read -p testing
-echo -----------------------------------------------------------------------------------------------
-
 if [ "$do_config" = true ] ; then
-     ./configure $config "$LIBVARS"
-#    ./configure $config FREETYPE_LIBS="-lz -lharfbuzz -lfreetype -lpng" HARFBUZZ_LIBS="-lfreetype -lpng -lharfbuzz -lz"
+     ./configure $config "${LIBVARS[@]}"
 fi
 
 if [ "$do_make" = true ] ; then
