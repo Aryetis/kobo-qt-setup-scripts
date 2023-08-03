@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -e -x
 
 LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -23,11 +23,12 @@ export RANLIB=${CROSS}-ranlib
 
 ######################################
 #pnglib
-export CPPFLAGS="-I$PREFIX/include"
+export CPPFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
 export LDFLAGS="-L$PREFIX/lib"
 #harfbuzz
-export CXXFLAGS="-I$PREFIX/include"
-export FREETYPE_CFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2 -I$PREFIX/include/freetype2/freetype"
+export CXXFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
+export CXXLD="-L$PREFIX/lib"
+export FREETYPE_CFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
 export FREETYPE_LIBS="-L$PREFIX/lib"
 export CHAFA_CFLAGS="-I$PREFIX/include"
 export CHAFA_LIBS="-L$PREFIX/lib"
@@ -165,17 +166,19 @@ REPO=https://github.com/harfbuzz/harfbuzz
 LOCALREPO=harfbuzz
 get_clean_repo
 
+export LIBS="-lz -lfreetype"
+
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --with-freetype
 #sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
 #./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
 make -j$PARALLEL_JOBS && make install
 
 
-##libfreetype with harfbuzz
-#REPO=https://github.com/freetype/freetype
-#LOCALREPO=freetype
-#get_clean_repo
+#libfreetype with harfbuzz
+REPO=https://github.com/freetype/freetype
+LOCALREPO=freetype
+get_clean_repo
 
-#sh autogen.sh 
-#./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-brotli --with-harfbuzz --with-png --disable-freetype-config
-#make -j$PARALLEL_JOBS && make install
+sh autogen.sh 
+./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-brotli --with-harfbuzz --with-png --disable-freetype-config
+make -j$PARALLEL_JOBS && make install
