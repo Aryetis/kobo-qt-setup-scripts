@@ -27,6 +27,8 @@ CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -xplatform ${CROSS_TC}-g++ \
  -sysroot ${SYSROOT} \
  -I /home/$USER/x-tools/usr/include \
+ -I /home/$USER/x-tools/usr/include/libpng16 \
+ -I /home/$USER/x-tools/usr/include/openssl \
  -I /home/$USER/x-tools/usr/include/freetype2 \
  -I /home/$USER/x-tools/usr/include/freetype2/freetype \
  -I /home/$USER/x-tools/usr/include/harfbuzz \
