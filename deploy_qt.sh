@@ -1,7 +1,7 @@
 #!/bin/sh
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-QTVERSION=5.15.10
+QTVERSION=5.15.13 # <= /home/${USER}/qt-bin/qt-linux-5.15-kde-kobo/bin/qmake -query QT_VERSION
 QTNAME=5.15-kde
 QTVERSIONMAJOR=5
 
@@ -19,7 +19,7 @@ PLATFORMPLUGINBUILDPATH=/home/${USER}/kobo/projects/build-koboplatformplugin-Kob
 rm -rf $TMPPATH
 
 mkdir $TMPPATH
-cp -r -t $TMPPATH $QTBINPATH/plugins $QTBINPATH/qml 
+cp -r -t $TMPPATH $QTBINPATH/plugins $QTBINPATH/qml
 
 mkdir $TMPPATH/lib
 cp -t $TMPPATH/lib $QTBINPATH/lib/*.so.$QTVERSION
@@ -27,7 +27,7 @@ mmv $TMPPATH/lib/\*.$QTVERSION $TMPPATH/lib/\#1.$QTVERSIONMAJOR
 
 rm -rf $TMPPATH/plugins/platforms/*
 
-cp -t $TMPPATH/plugins/platforms/ ${PLATFORMPLUGINBUILDPATH}/libkobo.so 
+cp -t $TMPPATH/plugins/platforms/ ${PLATFORMPLUGINBUILDPATH}/libkobo.so
 
 cp -r -t $TMPPATH/lib $ADDSPATH/*
 
@@ -37,8 +37,8 @@ cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libssl.so.3
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libcrypto.so.3
 
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libz.so.1
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libjpeg.so.62 
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libturbojpeg.so.0 
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libjpeg.so.62
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libturbojpeg.so.0
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libpng16.so.16
 
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libfreetype.so.6

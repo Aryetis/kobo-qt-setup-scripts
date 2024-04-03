@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -x
+set -e #-x uncomment for verbose output
 
 LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
@@ -26,28 +26,12 @@ export CXX=${CROSS}-g++
 export LD=${CROSS}-ld
 export RANLIB=${CROSS}-ranlib
 
-#######################################
-##pnglib
-#export CPPFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
-#export LDFLAGS="-L$PREFIX/lib"
-##harfbuzz
-#export CXXFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
-#export CXXLD="-L$PREFIX/lib"
-#export FREETYPE_CFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
-#export FREETYPE_LIBS="-L$PREFIX/lib"
-#export CHAFA_CFLAGS="-I$PREFIX/include"
-#export CHAFA_LIBS="-L$PREFIX/lib"
-#######################################
-
 export PKG_CONFIG_PATH=""
 export PKG_CONFIG_LIBDIR="${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/usr/share/pkgconfig"
 export PKG_CONFIG="pkg-config"
 
-
 CFLAGS_BASE="-O3 -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -mthumb -pipe -D__arm__ -D__ARM_NEON__ -fPIC -fpie -pie -fno-omit-frame-pointer -funwind-tables -Wl,--no-merge-exidx-entries"
-
 CFLAGS_OPT1="${CFLAGS_BASE} -ftree-vectorize -ffast-math -frename-registers -funroll-loops "
-
 CFLAGS_LTO="${CFLAGS_OPT1} -fdevirtualize-at-ltrans -flto=5"
 
 get_clean_repo()
@@ -77,7 +61,6 @@ make -j$PARALLEL_JOBS && make install
 
 export CFLAGS=$CFLAGS_LTO
 
-
 #libb2
 REPO=https://github.com/BLAKE2/libb2
 LOCALREPO=libb2
@@ -85,7 +68,6 @@ get_clean_repo
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC}
 ./configure --prefix=${PREFIX} --host=${CROSS_TC}
 make -j$PARALLEL_JOBS && make install
-
 
 #zstd
 REPO=https://github.com/facebook/zstd
@@ -97,7 +79,6 @@ cd ${LIBDIR}/libs/${LOCALREPO}/build/cmake/build
 cmake -D ADDITIONAL_CXX_FLAGS="-lrt" -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE=${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
 make -j$PARALLEL_JOBS && make install
 
-
 #openssl
 REPO="--single-branch --branch openssl-3.0 https://github.com/openssl/openssl"
 LOCALREPO=openssl-3.0
@@ -105,11 +86,6 @@ get_clean_repo
 
 ./Configure linux-elf no-comp no-tests no-asm shared --prefix=${PREFIX} --openssldir=${PREFIX}
 make -j$PARALLEL_JOBS && make install_sw
-
-
-echo ---------------------------------------------------
-echo ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=yes
-echo ---------------------------------------------------
 
 #pnglib
 export CPPFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
@@ -120,7 +96,6 @@ LOCALREPO=pnglib
 get_clean_repo
 
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=yes
-#./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=yes --libdir=${PREFIX}/lib --includedir=${PREFIX}/include
 make -j$PARALLEL_JOBS && make install
 export CPPFLAGS=""
 export LDFLAGS=""
@@ -181,12 +156,8 @@ export CHAFA_LIBS="-L$PREFIX/lib"
 export LIBS="-lz -lfreetype"
 
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --with-freetype
-##sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
-##./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-fontconfig --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --disable-introspection --with-freetype
 make -j$PARALLEL_JOBS && make install
 
-#export CPPFLAGS=""
-#export LDFLAGS=""
 export CXXFLAGS=""
 export CXXLD=""
 export FREETYPE_CFLAGS=""
