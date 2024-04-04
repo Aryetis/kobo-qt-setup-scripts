@@ -1,4 +1,12 @@
-#!/bin/sh
+#!/bin/bash
+set -e #-x
+
+if [ $# -lt 2 ];
+then
+  echo "Usage : deploy_qt.sh KOBO_DEVICE_IP QT_PLATFORM_PLUGIN_PATH"
+  exit
+fi
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 QTVERSION=5.15.13 # <= /home/${USER}/qt-bin/qt-linux-5.15-kde-kobo/bin/qmake -query QT_VERSION
@@ -14,7 +22,7 @@ OUTPUTNAME=qt-linux-$QTNAME-kobo
 TMPPATH=$DIR/deploy/$OUTPUTNAME
 ADDSPATH=$DIR/deploy/libadditions
 DEPLOYPATH=/mnt/onboard/.adds/$OUTPUTNAME
-PLATFORMPLUGINBUILDPATH=/home/${USER}/kobo/projects/build-koboplatformplugin-Kobo-Release
+PLATFORMPLUGINBUILDPATH=$2
 
 rm -rf $TMPPATH
 
@@ -23,6 +31,7 @@ cp -r -t $TMPPATH $QTBINPATH/plugins $QTBINPATH/qml
 
 mkdir $TMPPATH/lib
 cp -t $TMPPATH/lib $QTBINPATH/lib/*.so.$QTVERSION
+
 mmv $TMPPATH/lib/\*.$QTVERSION $TMPPATH/lib/\#1.$QTVERSIONMAJOR
 
 rm -rf $TMPPATH/plugins/platforms/*
@@ -47,7 +56,7 @@ cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libpcre2-16.so.0
 
 
 
-lftp -u root,123 -p 22 sftp://192.168.3.123 <<EOF
+lftp -u root,123 -p 22 sftp://$1 <<EOF
 rm -rf $DEPLOYPATH
 mkdir $DEPLOYPATH
 mirror -R $TMPPATH $DEPLOYPATH
