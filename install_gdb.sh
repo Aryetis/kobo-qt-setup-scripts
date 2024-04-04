@@ -3,13 +3,22 @@ set -e
 
 LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+CROSS_TC_PATH=${SYSROOT:=${HOME}/x-tools}
 CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
-SYSROOT=${SYSROOT:=/home/${USER}/kobo/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot}
+if [ ! -z "${SYSROOT}" ];
+then
+  SYSROOT=${CROSS_TC_PATH}/${CROSS_TC}/${CROSS_TC}/sysroot
+else
+  echo "[UB] SYSROOT already set and non empty, assuming its value is correct"
+  read -p "Press any key to continue"
+fi
 
-GDBDIR=${LIBDIR}/libs/gdb-10.2
+echo CROSS_TC=$CROSS_TC
+echo SYSROOT=$SYSROOT
 
-URL=http://ftp.gnu.org/gnu/gdb/gdb-10.2.tar.xz
+GDBDIR=${LIBDIR}/libs/gdb-11.2
+URL=http://ftp.gnu.org/gnu/gdb/gdb-11.2.tar.xz
 
 mkdir -p ${LIBDIR}/libs
 wget -c ${URL} -O - | tar -xJ -C ${LIBDIR}/libs

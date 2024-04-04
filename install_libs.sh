@@ -5,7 +5,6 @@ LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # path to cross tools root; another popular path is ${HOME}/x-tools
 CROSS_TC_PATH=${SYSROOT:=${HOME}/x-tools}
-
 CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
 if [ ! -z "${SYSROOT}" ];
@@ -13,6 +12,7 @@ then
   SYSROOT=${CROSS_TC_PATH}/${CROSS_TC}/${CROSS_TC}/sysroot
 else
   echo "[UB] SYSROOT already set and non empty, assuming its value is correct"
+  read -p "Press any key to continue"
 fi
 CROSS=${CROSS:=${CROSS_TC_PATH}/${CROSS_TC}/bin/${CROSS_TC}}
 PREFIX=${PREFIX:=${SYSROOT}/usr}
