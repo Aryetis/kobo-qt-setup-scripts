@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e #-x
 
-if [ $# -lt 2 ];
+if [ $# -lt 1 ];
 then
-  echo "Usage : deploy_qt.sh KOBO_DEVICE_IP QT_PLATFORM_PLUGIN_PATH"
+  echo "Usage : deploy_qt.sh [QT_PLATFORM_PLUGIN_PATH KOBO_DEVICE_IP]"
   exit
 fi
 
@@ -22,7 +22,7 @@ OUTPUTNAME=qt-linux-$QTNAME-kobo
 TMPPATH=$DIR/deploy/$OUTPUTNAME
 ADDSPATH=$DIR/deploy/libadditions
 DEPLOYPATH=/mnt/onboard/.adds/$OUTPUTNAME
-PLATFORMPLUGINBUILDPATH=$2
+PLATFORMPLUGINBUILDPATH=$1
 
 rm -rf $TMPPATH
 
@@ -54,11 +54,14 @@ cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libfreetype.so.6
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libharfbuzz.so.0
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libpcre2-16.so.0
 
+if [ -z "$2" ];
+then
+  echo "NO DEVICE IP PROVIDED => NO DEPLOYMENT"
+  exit
+fi
 
-
-lftp -u root,123 -p 22 sftp://$1 <<EOF
+lftp -u root,123 -p 22 sftp://$2 <<EOF
 rm -rf $DEPLOYPATH
 mkdir $DEPLOYPATH
 mirror -R $TMPPATH $DEPLOYPATH
 exit
-

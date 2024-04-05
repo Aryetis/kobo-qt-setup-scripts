@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -e #-x
 
 USAGE="usage: build_qt.sh [kobo|desktop] [config] [make] [install]"
 
@@ -26,15 +26,8 @@ CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -extprefix $PREFIX_KOBO \
  -xplatform ${CROSS_TC}-g++ \
  -sysroot ${SYSROOT} \
- -I /home/$USER/x-tools/usr/include \
- -I /home/$USER/x-tools/usr/include/libpng16 \
- -I /home/$USER/x-tools/usr/include/openssl \
- -I /home/$USER/x-tools/usr/include/freetype2 \
- -I /home/$USER/x-tools/usr/include/freetype2/freetype \
- -I /home/$USER/x-tools/usr/include/harfbuzz \
- -L /home/$USER/x-tools/usr/lib \
  -openssl-linked OPENSSL_PREFIX="${SYSROOT}/usr" \
- -qt-libjpeg -system-zlib -system-libpng -system-freetype -system-harfbuzz -system-pcre -sql-sqlite -linuxfb \
+ -system-libjpeg -system-zlib -system-libpng -system-freetype -system-harfbuzz -system-pcre -sql-sqlite -linuxfb \
  -no-sse2 -no-xcb -no-xcb-xlib -no-xkbcommon -no-tslib -no-icu -no-iconv -no-dbus -no-fontconfig \
  -nomake tests -nomake examples -no-compile-examples -no-opengl \
  -no-cups -no-pch \
@@ -59,7 +52,7 @@ config=$CONFIG_KOBO
 localrepo=$LOCALREPO_KOBO
 
 
-case  ${1:-kobo} in
+case ${1:-kobo} in
     kobo)
         platform=kobo
         config=$CONFIG_KOBO
