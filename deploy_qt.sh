@@ -45,7 +45,7 @@ cp -t $TMPPATH/lib ${SYSROOT}/lib/libstdc++.so.6
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libssl.so.3
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libcrypto.so.3
 
-cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libz.so.1
+cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libzstd.so.1
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libjpeg.so.62
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libturbojpeg.so.0
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libpng16.so.16
@@ -61,5 +61,4 @@ rm -rf $DEPLOYPATH
 mkdir $DEPLOYPATH
 mirror -R $TMPPATH $DEPLOYPATH
 exit
-EOF
 
