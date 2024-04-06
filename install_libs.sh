@@ -88,17 +88,12 @@ get_clean_repo
 make -j$PARALLEL_JOBS && make install_sw
 
 #pnglib
-export CPPFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
-export LDFLAGS="-L$PREFIX/lib"
-#LIBS=z
 REPO=git://git.code.sf.net/p/libpng/code
 LOCALREPO=pnglib
 get_clean_repo
 
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=yes
 make -j$PARALLEL_JOBS && make install
-export CPPFLAGS=""
-export LDFLAGS=""
 
 #libjpeg-turbo
 #needed: toolchain.cmake
@@ -130,7 +125,6 @@ get_clean_repo
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-pcre2-16 --enable-jit --with-sysroot=${SYSROOT}
 make -j$PARALLEL_JOBS && make install
 
-
 #libfreetype without harfbuzz
 REPO=https://github.com/freetype/freetype
 LOCALREPO=freetype
@@ -140,30 +134,13 @@ sh autogen.sh
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-brotli --without-harfbuzz --without-png --disable-freetype-config
 make -j$PARALLEL_JOBS && make install
 
-
 #harfbuzz
 REPO=https://github.com/harfbuzz/harfbuzz
 LOCALREPO=harfbuzz
 get_clean_repo
-export CPPFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
-export LDFLAGS="-L$PREFIX/lib"
-export CXXFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
-export CXXLD="-L$PREFIX/lib"
-export FREETYPE_CFLAGS="-I$PREFIX/include -I$PREFIX/include/freetype2/freetype -I$PREFIX/include/freetype2"
-export FREETYPE_LIBS="-L$PREFIX/lib"
-export CHAFA_CFLAGS="-I$PREFIX/include"
-export CHAFA_LIBS="-L$PREFIX/lib"
-export LIBS="-lz -lfreetype"
 
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --with-freetype
 make -j$PARALLEL_JOBS && make install
-
-export CXXFLAGS=""
-export CXXLD=""
-export FREETYPE_CFLAGS=""
-export FREETYPE_LIBS=""
-export CHAFA_CFLAGS=""
-export CHAFA_LIBS=""
 
 #libfreetype with harfbuzz
 REPO=https://github.com/freetype/freetype
