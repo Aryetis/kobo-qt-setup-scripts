@@ -14,9 +14,6 @@ else
   read -p "Press any key to continue"
 fi
 
-echo CROSS_TC=$CROSS_TC
-echo SYSROOT=$SYSROOT
-
 GDBDIR=${LIBDIR}/libs/gdb-11.2
 URL=http://ftp.gnu.org/gnu/gdb/gdb-11.2.tar.xz
 

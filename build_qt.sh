@@ -29,7 +29,7 @@ CONFIG_KOBO="--recheck-all -opensource -confirm-license -release -verbose \
  -nomake tests -nomake examples -no-compile-examples -no-opengl \
  -no-cups -no-pch \
  -no-sql-db2 -no-sql-ibase -no-sql-mysql -no-sql-oci -no-sql-odbc -no-sql-psql -no-sql-sqlite2 -no-sql-tds \
- -no-feature-printdialog -no-feature-printer -no-feature-printpreviewdialog -no-feature-printpreviewwidget"\
+ -no-feature-printdialog -no-feature-printer -no-feature-printpreviewdialog -no-feature-printpreviewwidget"
 
 CONFIG_DESKTOP="--recheck-all -opensource -confirm-license -release -verbose \
  -prefix $PREFIX_DESKTOP  \
@@ -86,7 +86,7 @@ cd $localrepo
 
 
 if [ "$do_config" = true ] ; then
-     ./configure $config "${LIBVARS[@]}"
+    ./configure $config
 fi
 
 if [ "$do_make" = true ] ; then
