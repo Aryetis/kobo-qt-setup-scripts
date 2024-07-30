@@ -1,8 +1,8 @@
 diff --git a/arch/arm/arm_features.c b/arch/arm/arm_features.c
-index 247ed027..57fe442c 100644
+index d0d49764..9f8b7c5c 100644
 --- a/arch/arm/arm_features.c
 +++ b/arch/arm/arm_features.c
-@@ -1,100 +1,10 @@
+@@ -1,115 +1,10 @@
  #include "zbuild.h"
  #include "arm_features.h"
  
@@ -16,6 +16,11 @@ index 247ed027..57fe442c 100644
 -#  ifndef ID_AA64ISAR0_CRC32_VAL
 -#    define ID_AA64ISAR0_CRC32_VAL ID_AA64ISAR0_CRC32
 -#  endif
+-#elif defined(__OpenBSD__) && defined(__aarch64__)
+-#  include <machine/armreg.h>
+-#  include <machine/cpu.h>
+-#  include <sys/sysctl.h>
+-#  include <sys/types.h>
 -#elif defined(__APPLE__)
 -#  if !defined(_DARWIN_C_SOURCE)
 -#    define _DARWIN_C_SOURCE /* enable types aliases (eg u_int) */
@@ -35,6 +40,16 @@ index 247ed027..57fe442c 100644
 -#elif defined(__FreeBSD__) && defined(__aarch64__)
 -    return getenv("QEMU_EMULATING") == NULL
 -      && ID_AA64ISAR0_CRC32_VAL(READ_SPECIALREG(id_aa64isar0_el1)) >= ID_AA64ISAR0_CRC32_BASE;
+-#elif defined(__OpenBSD__) && defined(__aarch64__)
+-    int hascrc32 = 0;
+-    int isar0_mib[] = { CTL_MACHDEP, CPU_ID_AA64ISAR0 };
+-    uint64_t isar0 = 0;
+-    size_t len = sizeof(isar0);
+-    if (sysctl(isar0_mib, 2, &isar0, &len, NULL, 0) != -1) {
+-      if (ID_AA64ISAR0_CRC32(isar0) >= ID_AA64ISAR0_CRC32_BASE)
+-          hascrc32 = 1;
+-    }
+-    return hascrc32;
 -#elif defined(__APPLE__)
 -    int hascrc32;
 -    size_t size = sizeof(hascrc32);
@@ -104,6 +119,6 @@ index 247ed027..57fe442c 100644
 -    features->has_neon = arm_has_neon();
 -#endif
 -    features->has_crc32 = arm_has_crc32();
-+    features->has_neon = 1;
-+    features->has_crc32 = 0;
++	features->has_neon = 1;
++	features->has_crc32 = 0;
  }

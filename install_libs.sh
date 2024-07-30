@@ -47,7 +47,7 @@ get_clean_repo()
     fi
 }
 
-# build zlib-ng without LTO
+## build zlib-ng without LTO
 export CFLAGS=$CFLAGS_OPT1
 
 #zlib-ng
@@ -132,15 +132,32 @@ get_clean_repo
 
 sh autogen.sh
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-brotli --without-harfbuzz --without-png --disable-freetype-config
-make -j$PARALLEL_JOBS && make install
+{make -j$PARALLEL_JOBS && make install
 
 #harfbuzz
 REPO=https://github.com/harfbuzz/harfbuzz
 LOCALREPO=harfbuzz
 get_clean_repo
 
+#echo -------------------------------------------------------------
+git reset --hard 93930fb # reverting to last known working version, cf https://github.com/harfbuzz/harfbuzz/issues/4818
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --with-freetype
 make -j$PARALLEL_JOBS && make install
+
+#echo -------------------------------------------------------------
+#echo ${PREFIX}
+#echo ${CROSS_TC}
+#echo $CC
+#pwd
+#echo -------------------------------------------------------------
+
+#sed -i "s|HOME|${HOME}|g" kobo-cc.txt # patch kobo-cc.txt relative path, because meson is stupid
+
+#meson setup builddir -Dcoretext=disabled -Dgdi=disabled -Dcairo=disabled -Dglib=disabled -Dgobject=disabled -Dgraphite2=disabled -Dicu=disabled -Dfreetype=enabled --prefix=${PREFIX} -Ddefault_library=both --cross-file kobo-cc.txt
+#cd builddir
+#meson compile
+
+#echo -------------------------------------------------------------
 
 #libfreetype with harfbuzz
 REPO=https://github.com/freetype/freetype

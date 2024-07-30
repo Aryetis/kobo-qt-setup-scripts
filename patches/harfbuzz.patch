@@ -1,0 +1,17 @@
+diff --git a/kobo-cc.txt b/kobo-cc.txt
+new file mode 100644
+index 000000000..9762bbfaa
+--- /dev/null
++++ b/kobo-cc.txt
+@@ -0,0 +1,11 @@
++[binaries]
++c = 'HOME/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf-gcc'
++cpp = 'HOME/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf-g++'
++ar = 'HOME/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf-ar'
++strip = 'HOME/x-tools/arm-kobo-linux-gnueabihf/bin/arm-kobo-linux-gnueabihf-strip'
++
++[host_machine]
++system = 'linux'
++cpu_family = 'arm'
++cpu = 'armv7a'
++endian = 'little'
