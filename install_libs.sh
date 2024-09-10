@@ -132,7 +132,7 @@ get_clean_repo
 
 sh autogen.sh
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-bzip2 --without-brotli --without-harfbuzz --without-png --disable-freetype-config
-{make -j$PARALLEL_JOBS && make install
+make -j$PARALLEL_JOBS && make install
 
 #harfbuzz
 REPO=https://github.com/harfbuzz/harfbuzz
