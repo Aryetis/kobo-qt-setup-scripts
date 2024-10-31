@@ -38,7 +38,7 @@ get_clean_repo()
 {
     mkdir -p ${LIBDIR}/libs
     cd ${LIBDIR}/libs
-    git clone $REPO $LOCALREPO || git -C $LOCALREPO pull
+    git clone --recurse-submodules $REPO $LOCALREPO || git -C $LOCALREPO pull
     cd ${LIBDIR}/libs/${LOCALREPO}
     git reset --hard
     git clean -fdx
