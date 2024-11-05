@@ -1,6 +1,25 @@
 #!/bin/bash
 set -e #-x uncomment for verbose output
 
+if [ $# -lt 1 ]
+then
+  echo "Usage : install_libs.sh [stable|experimental]"
+  echo "No/invalid parameter provided, assuming you want to get stable versions."
+  STABLE=true
+else
+  if [ "$1" = "stable" ]
+  then
+    STABLE=true
+  else if [ "$1" = "experimental" ]
+    then
+      echo -e "You chose \"experimental\" meaning you will be using the latest version of every library available.\nYou will break compatibility for other programs in case of major revision.\nYou will most likely have to adapt the zlib patch for the nth time.\nYou will suffer adapting harfbuzz from autotools to meson.\nYou will regret it."
+      read -p "Press Enter to confirm your suffering."
+    else
+      echo "No/invalid parameter provided, assuming you want to get stable versions."
+    fi
+  fi
+fi
+
 LIBDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 # path to cross tools root; another popular path is ${HOME}/x-tools
@@ -40,7 +59,12 @@ get_clean_repo()
     cd ${LIBDIR}/libs
     git clone --recurse-submodules $REPO $LOCALREPO || git -C $LOCALREPO pull
     cd ${LIBDIR}/libs/${LOCALREPO}
-    git reset --hard
+    if "$STABLE"
+    then
+	git reset --hard $STABLE_COMMIT
+    else
+	git reset --hard
+    fi
     git clean -fdx
     if test -f ${LIBDIR}/patches/${LOCALREPO}.patch; then
         git apply ${LIBDIR}/patches/${LOCALREPO}.patch
@@ -54,7 +78,10 @@ export CFLAGS=$CFLAGS_OPT1
 #patch: zlib configure line 314: ARCH=armv7-a
 REPO=https://github.com/zlib-ng/zlib-ng
 LOCALREPO=zlib-ng
+STABLE_COMMIT=94aacd8bd69b7bfafce14fbe7639274e11d92d51
 get_clean_repo
+
+exit
 
 ./configure --prefix=${PREFIX} --zlib-compat
 make -j$PARALLEL_JOBS && make install
@@ -65,6 +92,7 @@ export CFLAGS=$CFLAGS_LTO
 REPO=https://github.com/BLAKE2/libb2
 LOCALREPO=libb2
 get_clean_repo
+STABLE_COMMIT=643decfbf8ae600c3387686754d74c84144950d1
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC}
 ./configure --prefix=${PREFIX} --host=${CROSS_TC}
 make -j$PARALLEL_JOBS && make install
@@ -72,6 +100,7 @@ make -j$PARALLEL_JOBS && make install
 #zstd
 REPO=https://github.com/facebook/zstd
 LOCALREPO=zstd
+STABLE_COMMIT=5bae43b41130f5dd500b0dc8d427a2de4b4555e9
 get_clean_repo
 
 mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build/cmake/build
@@ -82,6 +111,7 @@ make -j$PARALLEL_JOBS && make install
 #openssl
 REPO="--single-branch --branch openssl-3.0 https://github.com/openssl/openssl"
 LOCALREPO=openssl-3.0
+STABLE_COMMIT=60dd10a535bb3b975a0302808e994f2ff250e9c9
 get_clean_repo
 
 ./Configure linux-elf no-comp no-tests no-asm shared --prefix=${PREFIX} --openssldir=${PREFIX}
@@ -90,6 +120,7 @@ make -j$PARALLEL_JOBS && make install_sw
 #pnglib
 REPO=git://git.code.sf.net/p/libpng/code
 LOCALREPO=pnglib
+STABLE_COMMIT=c1cc0f3f4c3d4abd11ca68c59446a29ff6f95003
 get_clean_repo
 
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=yes
@@ -99,6 +130,7 @@ make -j$PARALLEL_JOBS && make install
 #needed: toolchain.cmake
 REPO=https://github.com/libjpeg-turbo/libjpeg-turbo
 LOCALREPO=libjpeg-turbo
+STABLE_COMMIT=d7932a270921391c303b6ede6f1dfbd94290a3d8
 get_clean_repo
 
 mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
@@ -109,6 +141,7 @@ make -j$PARALLEL_JOBS && make install
 #expat
 REPO=https://github.com/libexpat/libexpat
 LOCALREPO=expat
+STABLE_COMMIT=ef485e96a609565317ec8695bb7b18fdcf084217
 get_clean_repo
 
 cd ${LIBDIR}/libs/${LOCALREPO}/expat
@@ -119,6 +152,7 @@ make -j$PARALLEL_JOBS && make install
 #pcre
 REPO=https://github.com/rurban/pcre
 LOCALREPO=pcre
+STABLE_COMMIT=24f9d8df0b8ddabc217ec4e7856a678e09f52773
 get_clean_repo
 
 ./autogen.sh
@@ -128,6 +162,7 @@ make -j$PARALLEL_JOBS && make install
 #libfreetype without harfbuzz
 REPO=https://github.com/freetype/freetype
 LOCALREPO=freetype
+STABLE_COMMIT=0ae7e607370cc66218ccfacf5de4db8a35424c2f
 get_clean_repo
 
 sh autogen.sh
@@ -137,31 +172,16 @@ make -j$PARALLEL_JOBS && make install
 #harfbuzz
 REPO=https://github.com/harfbuzz/harfbuzz
 LOCALREPO=harfbuzz
+STABLE_COMMIT=93930fb1c49b851541e25870b25f77daed0fb5fe # reverting to last known working version, cf https://github.com/harfbuzz/harfbuzz/issues/4818
 get_clean_repo
 
-#echo -------------------------------------------------------------
-git reset --hard 93930fb # reverting to last known working version, cf https://github.com/harfbuzz/harfbuzz/issues/4818
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC} --enable-shared=yes --enable-static=yes --without-coretext --without-uniscribe --without-cairo --without-glib  --without-gobject --without-graphite2 --without-icu --with-freetype
 make -j$PARALLEL_JOBS && make install
-
-#echo -------------------------------------------------------------
-#echo ${PREFIX}
-#echo ${CROSS_TC}
-#echo $CC
-#pwd
-#echo -------------------------------------------------------------
-
-#sed -i "s|HOME|${HOME}|g" kobo-cc.txt # patch kobo-cc.txt relative path, because meson is stupid
-
-#meson setup builddir -Dcoretext=disabled -Dgdi=disabled -Dcairo=disabled -Dglib=disabled -Dgobject=disabled -Dgraphite2=disabled -Dicu=disabled -Dfreetype=enabled --prefix=${PREFIX} -Ddefault_library=both --cross-file kobo-cc.txt
-#cd builddir
-#meson compile
-
-#echo -------------------------------------------------------------
 
 #libfreetype with harfbuzz
 REPO=https://github.com/freetype/freetype
 LOCALREPO=freetype
+STABLE_COMMIT=0ae7e607370cc66218ccfacf5de4db8a35424c2f
 get_clean_repo
 
 sh autogen.sh 

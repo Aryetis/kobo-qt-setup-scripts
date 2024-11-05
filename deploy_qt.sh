@@ -3,6 +3,7 @@ set -e #-x
 
 if [ $# -lt 1 ];
 then
+  echo "Usage : deploy_qt.sh [QT_PLATFORM_PLUGIN_PATH KOBO_DEVICE_IP]"
   echo "No QT_PLATFORM_PLUGIN_PATH provided, you will have to handle libkobo.so platform plugin by yourself"
 fi
 
