@@ -3,13 +3,18 @@ set -e #-x
 
 if [ $# -lt 1 ];
 then
+  echo "No QT_PLATFORM_PLUGIN_PATH provided, you will have to handle libkobo.so platform plugin by yourself"
+fi
+
+if [ $# -gt 2 ];
+then
   echo "Usage : deploy_qt.sh [QT_PLATFORM_PLUGIN_PATH KOBO_DEVICE_IP]"
   exit
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-QTVERSION=5.15.13 # <= /home/${USER}/qt-bin/qt-linux-5.15-kde-kobo/bin/qmake -query QT_VERSION
+QTVERSION="$(/home/${USER}/qt-bin/qt-linux-5.15-kde-kobo/bin/qmake -query QT_VERSION)" # 5.15.15
 QTNAME=5.15-kde
 QTVERSIONMAJOR=5
 
@@ -22,7 +27,6 @@ OUTPUTNAME=qt-linux-$QTNAME-kobo
 TMPPATH=$DIR/deploy/$OUTPUTNAME
 ADDSPATH=$DIR/deploy/libadditions
 DEPLOYPATH=/mnt/onboard/.adds/$OUTPUTNAME
-PLATFORMPLUGINBUILDPATH=$1
 
 rm -rf $TMPPATH
 
@@ -36,7 +40,11 @@ mmv $TMPPATH/lib/\*.$QTVERSION $TMPPATH/lib/\#1.$QTVERSIONMAJOR
 
 rm -rf $TMPPATH/plugins/platforms/*
 
-cp -t $TMPPATH/plugins/platforms/ ${PLATFORMPLUGINBUILDPATH}/libkobo.so
+if [ $# -gt 1 ];
+then
+  PLATFORMPLUGINBUILDPATH=$1
+  cp -t $TMPPATH/plugins/platforms/ ${PLATFORMPLUGINBUILDPATH}/libkobo.so
+fi
 
 cp -r -t $TMPPATH/lib $ADDSPATH/*
 
@@ -56,7 +64,7 @@ cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libpcre2-16.so.0
 
 if [ -z "$2" ];
 then
-  echo "NO DEVICE IP PROVIDED => NO DEPLOYMENT"
+  echo "NO DEVICE IP PROVIDED => NO DEPLOYMENT OVER WIFI"
   exit
 fi
 
