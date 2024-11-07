@@ -63,9 +63,11 @@ cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libfreetype.so.6
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libharfbuzz.so.0
 cp -t $TMPPATH/lib ${SYSROOT}/usr/lib/libpcre2-16.so.0
 
+echo "Files ready to be deployed at $DEPLOYPATH"
+
 if [ -z "$2" ];
 then
-  echo "NO DEVICE IP PROVIDED => NO DEPLOYMENT OVER WIFI"
+  echo "No device IP provided => No deployment over wifi"
   exit
 fi
 
