@@ -89,8 +89,8 @@ export CFLAGS=$CFLAGS_LTO
 #libb2
 REPO=https://github.com/BLAKE2/libb2
 LOCALREPO=libb2
-get_clean_repo
 STABLE_COMMIT=643decfbf8ae600c3387686754d74c84144950d1
+get_clean_repo
 sh autogen.sh --prefix=${PREFIX} --host=${CROSS_TC}
 ./configure --prefix=${PREFIX} --host=${CROSS_TC}
 make -j$PARALLEL_JOBS && make install
