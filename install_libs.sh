@@ -81,8 +81,6 @@ LOCALREPO=zlib-ng
 STABLE_COMMIT=94aacd8bd69b7bfafce14fbe7639274e11d92d51
 get_clean_repo
 
-exit
-
 ./configure --prefix=${PREFIX} --zlib-compat
 make -j$PARALLEL_JOBS && make install
 
