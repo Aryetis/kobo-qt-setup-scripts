@@ -15,14 +15,14 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-QTVERSION="$(/home/${USER}/qt-bin/qt-linux-5.15-kde-kobo/bin/qmake -query QT_VERSION)" # 5.15.15
+QTVERSION="$(${HOME}/qt-bin/qt-linux-5.15-kde-kobo/bin/qmake -query QT_VERSION)" # 5.15.15
 QTNAME=5.15-kde
 QTVERSIONMAJOR=5
 
 export CROSS_TC=arm-kobo-linux-gnueabihf
 
-export SYSROOT=/home/${USER}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot
-QTBINPATH=/home/${USER}/qt-bin/qt-linux-$QTNAME-kobo
+export SYSROOT=${HOME}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot
+QTBINPATH=${HOME}/qt-bin/qt-linux-$QTNAME-kobo
 
 OUTPUTNAME=qt-linux-$QTNAME-kobo
 TMPPATH=$DIR/deploy/$OUTPUTNAME

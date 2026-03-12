@@ -25,7 +25,7 @@ cd ${GDBDIR}
 mkdir -p build-gdb
 cd build-gdb
 rm -rf ./*
-../configure --prefix=/home/${USER}/x-tools/${CROSS_TC} --target=${CROSS_TC} --with-python=python3
+../configure --prefix=${HOME}/x-tools/${CROSS_TC} --target=${CROSS_TC} --with-python=python3
 make -j5 && make install
 
 
