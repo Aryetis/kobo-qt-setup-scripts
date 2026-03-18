@@ -57,6 +57,7 @@ get_clean_repo()
 {
     mkdir -p ${LIBDIR}/libs
     cd ${LIBDIR}/libs
+    rm -rf ${LIBDIR}/libs/${LOCALREPO}
     git clone --recurse-submodules $REPO $LOCALREPO || git -C $LOCALREPO pull
     cd ${LIBDIR}/libs/${LOCALREPO}
     if "$STABLE"
@@ -150,7 +151,7 @@ make -j$PARALLEL_JOBS && make install
 #pcre
 REPO=https://github.com/rurban/pcre
 LOCALREPO=pcre
-STABLE_COMMIT=24f9d8df0b8ddabc217ec4e7856a678e09f52773
+STABLE_COMMIT=bf50eeef64fc4f5ddfc93a041e2f4d7357f3c431
 get_clean_repo
 
 ./autogen.sh
