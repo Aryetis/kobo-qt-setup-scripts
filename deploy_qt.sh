@@ -3,7 +3,7 @@ set -e #-x
 
 if [ $# -lt 1 ];
 then
-  echo "Usage : deploy_qt.sh [QT_PLATFORM_PLUGIN_PATH KOBO_DEVICE_IP]"
+  echo "Usage : deploy_qt.sh [QT_PLATFORM_PLUGIN_PATH] [KOBO_DEVICE_IP]"
   echo "No QT_PLATFORM_PLUGIN_PATH provided, you will have to handle libkobo.so platform plugin by yourself"
 fi
 
@@ -15,7 +15,6 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-QTVERSION="$(${HOME}/qt-bin/qt-linux-5.15-kde-kobo/bin/qmake -query QT_VERSION)" # 5.15.15
 QTNAME=5.15-kde
 QTVERSIONMAJOR=5
 
@@ -23,6 +22,7 @@ export CROSS_TC=arm-kobo-linux-gnueabihf
 
 export SYSROOT=${HOME}/x-tools/${CROSS_TC}/${CROSS_TC}/sysroot
 QTBINPATH=${HOME}/qt-bin/qt-linux-$QTNAME-kobo
+QTVERSION="$(${QTBINPATH}/bin/qmake -query QT_VERSION)" # 5.15.15
 
 OUTPUTNAME=qt-linux-$QTNAME-kobo
 TMPPATH=$DIR/deploy/$OUTPUTNAME
