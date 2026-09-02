@@ -2,3 +2,4 @@ libs/**
 qt-linux**/**
 deploy/**
 qt6/**
+.qtcreator/**
