@@ -1,16 +1,15 @@
 #!/bin/bash
 set -e
-
 export GIT_TERMINAL_PROMPT=0
 
 USAGE="usage: get_qt.sh [kobo|koboWithDocs|desktop|desktopWithDocs] [stable|experimental] [clean]"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-REPO=https://invent.kde.org/qt/qt/qt5
-LOCALREPO_KOBO="${SCRIPT_DIR}/qt-linux-5.15-kde-kobo"
-LOCALREPO_DESKTOP="${SCRIPT_DIR}/qt-linux-5.15-kde-desktop"
-BRANCH=kde/5.15
+REPO=http://github.com/qt/qt5
+LOCALREPO_KOBO="${SCRIPT_DIR}/qt-linux-5.15-kobo"
+LOCALREPO_DESKTOP="${SCRIPT_DIR}/qt-linux-5.15-desktop"
+BRANCH=5.15.17
 
 PATCH_PATH="${SCRIPT_DIR}/patches/qt5.15.patch"
 
@@ -18,7 +17,7 @@ MODULES_BASE="qtbase qtcharts qtdeclarative qtgraphicaleffects qtimageformats qt
 MODULES_DOCS="qttools qtdoc"
 MODULES_DESKTOP="qttools qttranslations qtx11extras qtwayland"
 
-STABLE_COMMIT="933cb1705c9d8b1d733c719d1cffb8efbec89d7b"
+STABLE_COMMIT="c59ae95d8aed879768fe09e0de04f693724e6319"
 
 platform=kobo
 modules=$MODULES_BASE
