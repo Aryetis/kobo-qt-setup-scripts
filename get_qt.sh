@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+export GIT_TERMINAL_PROMPT=0
+
 USAGE="usage: get_qt.sh [kobo|koboWithDocs|desktop|desktopWithDocs] [stable|experimental] [clean]"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e #-x uncomment for verbose output
 
+export GIT_TERMINAL_PROMPT=0
+
 if [ $# -lt 1 ]
 then
   echo "Usage : install_libs.sh [stable|experimental]"
