@@ -55,6 +55,9 @@ CFLAGS_BASE="-O3 -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -mt
 CFLAGS_OPT1="${CFLAGS_BASE} -ftree-vectorize -ffast-math -frename-registers -funroll-loops "
 CFLAGS_LTO="${CFLAGS_OPT1} -fdevirtualize-at-ltrans -flto=5"
 
+# LTO but -without ffast-math, causing issues for libpng
+CFLAGS_PNG="${CFLAGS_BASE} -ftree-vectorize -frename-registers -funroll-loops -fdevirtualize-at-ltrans -flto=5"
+
 get_clean_repo()
 {
     mkdir -p ${LIBDIR}/libs
@@ -119,6 +122,8 @@ get_clean_repo
 make -j$PARALLEL_JOBS && make install_sw
 
 #pnglib
+export CFLAGS=$CFLAGS_PNG
+
 REPO=git://git.code.sf.net/p/libpng/code
 LOCALREPO=pnglib
 STABLE_COMMIT=c1cc0f3f4c3d4abd11ca68c59446a29ff6f95003
@@ -127,7 +132,14 @@ get_clean_repo
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=yes
 make -j$PARALLEL_JOBS && make install
 
+export CFLAGS=$CFLAGS_LTO
+
+
+
+
+
 #libjpeg-turbo
+############### BUGGED !!!!! need to find a way to disable -fpie and -pie only for this lib !!!!!!!!
 #needed: toolchain.cmake
 REPO=https://github.com/libjpeg-turbo/libjpeg-turbo
 LOCALREPO=libjpeg-turbo
@@ -138,6 +150,11 @@ mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
 cd ${LIBDIR}/libs/${LOCALREPO}/build
 cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE=${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
 make -j$PARALLEL_JOBS && make install
+
+exit
+
+
+
 
 #expat
 REPO=https://github.com/libexpat/libexpat
