@@ -54,6 +54,10 @@ export PKG_CONFIG="pkg-config"
 CFLAGS_BASE="-O3 -march=armv7-a -mtune=cortex-a8 -mfpu=neon -mfloat-abi=hard -mthumb -pipe -D__arm__ -D__ARM_NEON__ -fPIC -fpie -pie -fno-omit-frame-pointer -funwind-tables -Wl,--no-merge-exidx-entries"
 CFLAGS_OPT1="${CFLAGS_BASE} -ftree-vectorize -ffast-math -frename-registers -funroll-loops "
 CFLAGS_LTO="${CFLAGS_OPT1} -fdevirtualize-at-ltrans -flto=5"
+# LTO but -without ffast-math
+#CFLAGS_PNG="${CFLAGS_BASE} -ftree-vectorize -frename-registers -funroll-loops -fdevirtualize-at-ltrans -flto=5"
+CFLAGS_PNG="${CFLAGS_LTO//-ffast-math/}"
+
 
 get_clean_repo()
 {
@@ -74,6 +78,9 @@ get_clean_repo()
     fi
 }
 
+
+
+
 ## build zlib-ng without LTO
 export CFLAGS=$CFLAGS_OPT1
 
@@ -87,6 +94,10 @@ get_clean_repo
 ./configure --prefix=${PREFIX} --zlib-compat
 make -j$PARALLEL_JOBS && make install
 
+
+
+
+## Use LTO
 export CFLAGS=$CFLAGS_LTO
 
 #libb2
@@ -118,6 +129,14 @@ get_clean_repo
 ./Configure linux-elf no-comp no-tests no-asm shared --prefix=${PREFIX} --openssldir=${PREFIX}
 make -j$PARALLEL_JOBS && make install_sw
 
+
+
+
+## Removing --ffast-math as it breaks libpng for some reasons
+export CFLAGS=$CFLAGS_PNG
+
+CFLAGS_PNG="${CFLAGS_LTO//-ffast-math/}"
+
 #pnglib
 REPO=git://git.code.sf.net/p/libpng/code
 LOCALREPO=pnglib
@@ -127,6 +146,12 @@ get_clean_repo
 ./configure --prefix=${PREFIX} --host=${CROSS_TC} --enable-arm-neon=yes
 make -j$PARALLEL_JOBS && make install
 
+
+
+
+## Restoring the usual LTO flags
+export CFLAGS=$CFLAGS_LTO
+
 #libjpeg-turbo
 #needed: toolchain.cmake
 REPO=https://github.com/libjpeg-turbo/libjpeg-turbo
@@ -134,9 +159,22 @@ LOCALREPO=libjpeg-turbo
 STABLE_COMMIT=d7932a270921391c303b6ede6f1dfbd94290a3d8
 get_clean_repo
 
+### for some reasons, rellocation breaks everything with libjpeg... for now let's turn it off
+CFLAGS_JPEG="${CFLAGS_LTO//-fpie/}"
+CFLAGS_JPEG="${CFLAGS_JPEG//-pie/}"
+
 mkdir -p ${LIBDIR}/libs/${LOCALREPO}/build
 cd ${LIBDIR}/libs/${LOCALREPO}/build
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_TOOLCHAIN_FILE=${LIBDIR}/${CROSS_TC}.cmake -DENABLE_NEON=ON -DNEON_INTRINSICS=ON ..
+
+cmake \
+  -DCMAKE_BUILD_TYPE=RELEASE \
+  -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+  -DCMAKE_TOOLCHAIN_FILE="${LIBDIR}/${CROSS_TC}.cmake" \
+  -DCMAKE_C_FLAGS="${CFLAGS_JPEG}" \
+  -DENABLE_NEON=ON \
+  -DNEON_INTRINSICS=ON \
+  ..
+
 make -j$PARALLEL_JOBS && make install
 
 #expat
