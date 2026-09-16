@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-export GIT_TERMINAL_PROMPT=0
+export GIT_TERMINAL_PROMPT=1
 
 USAGE="usage: get_qt.sh [kobo|koboWithDocs|desktop|desktopWithDocs] [stable|experimental] [clean]"
 
