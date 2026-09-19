@@ -5,8 +5,8 @@ USAGE="usage: build_qt.sh [kobo|desktop] [config] [make] [install]"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
-LOCALREPO_KOBO=qt-linux-5.15-kde-kobo
-LOCALREPO_DESKTOP=qt-linux-5.15-kde-desktop
+LOCALREPO_KOBO=qt-linux-5.15-kobo
+LOCALREPO_DESKTOP=qt-linux-5.15-desktop
 
 CROSS_TC=${CROSS_TC:=arm-kobo-linux-gnueabihf}
 
