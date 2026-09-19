@@ -37,5 +37,7 @@ install_gdb.sh will download, compile and install both GDB and GDB-Server for de
 GDB will be installed in /home/${USER}/x-tools/arm-kobo-linux-gnueabihf/bin.
 GDB-Server will be installed in /home/${USER}/x-tools/arm-kobo-linux-gnueabihf/arm-kobo-linux-gnueabihf/sysroot/usr/bin and has to be transfered to deployed on the Kobo device.
 
-## Docker Image
-A docker image with complete environment and a preconfigured Qt Creator can be found here https://github.com/Rain92/kobo-qt-dev-docker.
+## Docker Images
+[Rain92's original (unmaintained) docker image](https://github.com/Rain92/kobo-qt-dev-docker) with complete environment and a preconfigured Qt Creator.
+
+[My docker image](https://github.com/Aryetis/KoboToolchainDocker) meant to be used with host's Qtcreator (configured with ["Docker Plugin"](https://doc.qt.io/qtcreator/creator-reference-docker.html)).
