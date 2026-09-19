@@ -15,7 +15,7 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-QTNAME=5.15-kde
+QTNAME=5.15
 QTVERSIONMAJOR=5
 
 export CROSS_TC=arm-kobo-linux-gnueabihf
